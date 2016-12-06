@@ -6,17 +6,18 @@ import copy
 import ctypes
 
 def main() :
-    infile = sys.argv[1]
-    outfile = sys.argv[2]
-    filter_width = sys.argv[3]
-    filter_weights = []
+    infile =  open(sys.argv[1], 'rb')
+    img_data = file.read(infile)
+    out_file = open(sys.argv[2], 'wb+')
+    filter_width = ctypes.c_int(int(sys.argv[3]))
+    pyarr = []
     for nums in sys.argv[4:] :
-        filter_weights = filter_weights + [nums,]
-
+        pyarr = pyarr + [ctypes.c_float(float(nums)),]
+    arr = (ctypes.c_float * len(pyarr))(*pyarr)
     clib = ctypes.cdll.LoadLibrary("libfast_filter.so")
+    clib.doFiltering(img_data, arr, filter_width, img_data)
 
-    #clib.doFiltering(infile, filter_weights, filter_width, outfile)
-
+    out_file.write( img_data )
 
 if __name__ == '__main__':
     main()
